@@ -1,17 +1,18 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import listEndpoints from "express-list-endpoints";
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import listEndpoints from 'express-list-endpoints';
 
-import { createServer } from "http";
-import { Server } from "socket.io";
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 // ERROR HANDLER import
 import {
   forbiddenErrHandler,
   serverErrHandler,
   badReqErrHandler,
   notFoundErrHandler,
-} from "./errorHandlers";
+} from './errorHandlers.js';
+import usersRouter from './services/index.js';
 // Model import
 
 // CHAT ROUTER import
@@ -20,11 +21,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const server = createServer;
+// const server = createServer;
 // const io = new Server(server, { true})
 
 // app.use(router? user )
-app.use("/", messageRouter);
+app.use('/', usersRouter);
+// app.use('/', messageRouter);
 
 // app.use( errohandlers)
 app.use(badReqErrHandler);
@@ -33,9 +35,9 @@ app.use(forbiddenErrHandler);
 app.use(serverErrHandler);
 
 mongoose.connect(process.env.MONGODB_CONNECT).then(() => {
-  console.log("SUCCESS: connected to MONGODB");
-  server.listen(PORT, () => {
+  console.log('SUCCESS: connected to MONGODB');
+  app.listen(PORT, () => {
     listEndpoints(app);
-    console.log("SERVER listenign on: " + PORT);
+    console.log('SERVER listening on: ' + PORT);
   });
 });

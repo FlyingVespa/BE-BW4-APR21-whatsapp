@@ -14,12 +14,14 @@ const UserSchema = new Schema({
   },
   status: {
     type: String,
+    maxLength: 80,
   },
   avatar: {
     type: String,
-    required: true,
   },
   password: {
     type: String,
   },
 });
+
+export default model('User', UserSchema);
