@@ -24,7 +24,7 @@ const server = createServer;
 // const io = new Server(server, { true})
 
 // app.use(router? user )
-// app.use(router?  chat)
+app.use("/", messageRouter);
 
 // app.use( errohandlers)
 app.use(badReqErrHandler);
