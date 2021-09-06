@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import listEndpoints from 'express-list-endpoints';
+import dotenv from 'dotenv';
 
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -12,7 +13,9 @@ import {
   badReqErrHandler,
   notFoundErrHandler,
 } from './errorHandlers.js';
-import usersRouter from './services/index.js';
+import usersRouter from './auth/auth.js';
+
+dotenv.config()
 // Model import
 
 // CHAT ROUTER import
@@ -25,7 +28,7 @@ app.use(express.json());
 // const io = new Server(server, { true})
 
 // app.use(router? user )
-app.use('/', usersRouter);
+app.use('/auth', usersRouter);
 // app.use('/', messageRouter);
 
 // app.use( errohandlers)
