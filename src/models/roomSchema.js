@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
@@ -17,7 +17,7 @@ export const MessageSchema = new Schema({
   },
 });
 
-RoomSchema = new Schema(
+export const RoomSchema = new Schema(
   {
     name: {
       type: String,
@@ -32,4 +32,4 @@ RoomSchema = new Schema(
   { timestamps: true }
 );
 
-export default model('rooms', RoomSchema);
+export default model("rooms", RoomSchema);
