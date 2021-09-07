@@ -54,6 +54,35 @@ userRouter.post("/:id/upload", JWTAuthMiddleware, uploadOnCloudinary,  async (re
       next(error);
     }
   });
+
+  userRouter.get("/:username", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+      const regex = new RegExp(req.params.username, "i")
+      // console.log(regex)
+      const users = await UserSchema.find({ username: { $regex: regex } })
+  
+      // console.log(req.params.query)
+      // console.log(users)
+      const otherUsers = users.filter((user) => user._id.toString() !== req.user._id.toString());
+  
+      res.send(users);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  });
+
+  userRouter.put("/:id/status", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+      const user = await UserSchema.findById(req.user._id);
+      user.status = req.body.status;
+      await user.save();
+      res.send(user);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  });
 userRouter.delete("/:id",JWTAuthMiddleware, async (req, res, next) => {
     try {
       const deletedPost = await UserSchema.findByIdAndDelete(req.params.id)
