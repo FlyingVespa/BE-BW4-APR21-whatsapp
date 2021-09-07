@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
 
@@ -16,11 +16,21 @@ export const MessageSchema = new Schema({
     required: true,
   },
 });
-
-export const RoomSchema = new Schema(
+//participants array
+const RoomSchema = new Schema(
   {
     name: {
       type: String,
+      required: true,
+    },
+    participants: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'users',
+        },
+      ],
+      default: undefined,
       required: true,
     },
     chatHistory: {
@@ -32,4 +42,6 @@ export const RoomSchema = new Schema(
   { timestamps: true }
 );
 
-export default model("rooms", RoomSchema);
+const RoomModel = model('rooms', RoomSchema);
+
+export default RoomModel;
