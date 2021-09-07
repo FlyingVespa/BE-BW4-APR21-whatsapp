@@ -8,8 +8,8 @@ const roomRouter = express.Router();
 
 roomRouter.get('/', async (req, res, next) => {
   try {
-    const room = await RoomModel.findById(req.params.id);
-    res.status(200).send({ messages: asd });
+    const rooms = await RoomModel.find({});
+    res.status(200).send(rooms);
   } catch (error) {
     console.log(error);
     next(error);
