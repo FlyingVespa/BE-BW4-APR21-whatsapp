@@ -45,9 +45,11 @@ roomRouter.post('/', async (req, res, next) => {
 roomRouter.get('/me', JWTAuthMiddleware, async (req, res, next) => {
   try {
     console.log('HELLLO THIS IS MY CONSOLE LOG!!!', req.user._id.toString());
-    const find = RoomModel.find({ participants: req.user._id.toString() });
+    const find = await RoomModel.find({
+      participants: req.user._id.toString(),
+    });
     console.log('FIND', find);
-    console.log('participants', participants);
+
     res.send(find);
   } catch (error) {
     console.log(error);

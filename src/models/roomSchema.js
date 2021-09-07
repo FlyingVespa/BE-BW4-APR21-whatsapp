@@ -27,7 +27,7 @@ const RoomSchema = new Schema(
       type: [
         {
           type: Schema.Types.ObjectId,
-          ref: 'users',
+          ref: 'User',
         },
       ],
       default: undefined,
