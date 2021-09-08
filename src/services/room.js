@@ -104,9 +104,11 @@ roomRouter.get('/me', JWTAuthMiddleware, async (req, res, next) => {
     // this person's socket must join all the rooms in which s/he is already present
 
     const rooms = await RoomModel.find({ participants: userId });
+    console.log('userid', userId);
     for (let room of rooms) {
-      console.log(onlineUsers.find(userId).join(room.id));
-      onlineUsers.find(userId).join(room.id);
+      onlineUsers
+        .find((element) => element.userId === userId)
+        .socket.join(room.id);
     }
     res.send(rooms);
 
