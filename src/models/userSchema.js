@@ -72,4 +72,4 @@ UserSchema.statics.checkCredentials = async function (email, plainPW) {
   }
 };
 
-export default model('User', UserSchema);
+export default model('user', UserSchema);
