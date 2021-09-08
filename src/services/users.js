@@ -72,6 +72,18 @@ userRouter.post("/:id/upload", JWTAuthMiddleware, uploadOnCloudinary,  async (re
     }
   });
 
+  usersRouter.put("/:id/status", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+      const user = await UserSchema.findById(req.user._id);
+      user.status = req.body.status;
+      await user.save();
+      res.send(user);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  });
+
   userRouter.put("/:id/status", JWTAuthMiddleware, async (req, res, next) => {
     try {
       const user = await UserSchema.findById(req.user._id);
@@ -85,8 +97,8 @@ userRouter.post("/:id/upload", JWTAuthMiddleware, uploadOnCloudinary,  async (re
   });
 userRouter.delete("/:id",JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const deletedPost = await UserSchema.findByIdAndDelete(req.params.id)
-      if (deletedPost) {
+      const deletedUser = await UserSchema.findByIdAndDelete(req.params.id)
+      if (deletedUser) {
         res.status(204).send()
       } else {
         next(createError(404, `User with _id ${req.params.id} not found!`))
