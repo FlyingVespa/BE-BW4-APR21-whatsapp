@@ -45,7 +45,6 @@ userRouter.put("/:id", JWTAuthMiddleware, async (req, res, next) => {
 });
 
 
-
 userRouter.post("/:id/upload", JWTAuthMiddleware, uploadOnCloudinary,  async (req, res, next) => {
     try {
       const user = await UserModel.findById(req.user._id);
