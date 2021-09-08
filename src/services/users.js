@@ -71,17 +71,8 @@ userRouter.get('/:username', JWTAuthMiddleware, async (req, res, next) => {
     // console.log(regex)
     const users = await UserSchema.find({ username: { $regex: regex } });
 
-    // console.log(req.params.query)
-    // console.log(users)
-    const otherUsers = users.filter(
-      (user) => user._id.toString() !== req.user._id.toString()
-    );
-
-    res.send(users);
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
+    //res.....
+  } catch {}
 });
 
 userRouter.put('/:id/status', JWTAuthMiddleware, async (req, res, next) => {
@@ -107,6 +98,7 @@ userRouter.put('/:id/status', JWTAuthMiddleware, async (req, res, next) => {
     next(error);
   }
 });
+
 userRouter.delete('/:id', JWTAuthMiddleware, async (req, res, next) => {
   try {
     const deletedUser = await UserSchema.findByIdAndDelete(req.params.id);
