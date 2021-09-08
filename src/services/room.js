@@ -42,6 +42,13 @@ roomRouter.post('/', async (req, res, next) => {
   }
 });
 
+roomRouter.get('/room/history/:id', async (req, res) => {
+  const room = await RoomModel.findById(req.params.id);
+  res.status(200).send({ chatHistory: room.chatHistory });
+});
+
+// need to check history soon
+
 roomRouter.get('/me', JWTAuthMiddleware, async (req, res, next) => {
   try {
     console.log('HELLLO THIS IS MY CONSOLE LOG!!!', req.user._id.toString());
