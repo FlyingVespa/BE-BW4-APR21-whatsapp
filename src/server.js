@@ -14,9 +14,10 @@ import {
   notFoundErrHandler,
 } from './errorHandlers.js';
 import usersRouter from './auth/auth.js';
-import userRouter from './services/users.js'
+import userRouter from './services/users.js';
+import roomRouter from './services/room.js';
 
-dotenv.config()
+dotenv.config();
 // Model import
 
 // CHAT ROUTER import
@@ -30,7 +31,8 @@ app.use(express.json());
 
 // app.use(router? user )
 app.use('/auth', usersRouter);
-app.use('/users', userRouter)
+app.use('/users', userRouter);
+app.use('/room', roomRouter);
 // app.use('/', messageRouter);
 
 // app.use( errohandlers)
