@@ -8,7 +8,11 @@ const roomRouter = express.Router();
 
 roomRouter.get('/', async (req, res, next) => {
   try {
-    const rooms = await RoomModel.find({});
+    const rooms = await RoomModel.find({}).populate({
+      path: 'participants',
+      select: '-password',
+    });
+
     res.status(200).send(rooms);
   } catch (error) {
     console.log(error);
@@ -54,7 +58,11 @@ roomRouter.get('/me', JWTAuthMiddleware, async (req, res, next) => {
     console.log('HELLLO THIS IS MY CONSOLE LOG!!!', req.user._id.toString());
     const find = await RoomModel.find({
       participants: req.user._id.toString(),
+    }).populate({
+      path: 'participants',
+      select: '-password',
     });
+
     console.log('FIND', find);
 
     res.send(find);
