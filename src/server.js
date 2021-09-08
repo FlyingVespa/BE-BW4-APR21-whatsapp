@@ -26,10 +26,9 @@ app.use(express.json());
 
 dotenv.config();
 
-const server = createServer(app);
 // const server = createServer;
 // const io = new Server(server, { true})
-const io = new Server(server, { allowEIO3: true });
+
 // app.use(router? user )
 app.use('/auth', usersRouter);
 app.use('/users', userRouter);
@@ -45,7 +44,11 @@ app.use(serverErrHandler);
 export const sockets = {};
 let onlineUsers = [];
 
+const server = createServer(app);
+const io = new Server(server, { allowEIO3: true });
+
 io.on('connection', (socket) => {
+  console.log(socket);
   socket.on('did-connect', async (userId) => {
     sockets[userId] = socket;
     try {
@@ -73,15 +76,15 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('message', message);
   });
 
-  socket.on('login', ({ username, room }) => {
-    onlineUsers.push({ username, id: socket.id, room });
+  socket.on('login', ({ username }) => {
+    onlineUsers.push({ username, id: socket.id, socket });
 
-    socket.join(room);
+    //socket.join(room);
     console.log(socket.rooms);
 
     // Emits to everyone excluding this client
     socket.broadcast.emit('newLogin');
-    socket.emit('loggedin');
+    socket.emit('loggedin', { message: 'hello world' });
   });
 
   socket.on('disconnect', (userId) => {
@@ -90,9 +93,11 @@ io.on('connection', (socket) => {
   });
 });
 
+export { onlineUsers };
+
 mongoose.connect(process.env.MONGODB_CONNECT).then(() => {
   console.log('SUCCESS: connected to MONGODB');
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     listEndpoints(app);
     console.log('SERVER listening on: ' + PORT);
   });
