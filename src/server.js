@@ -1,4 +1,3 @@
-
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -18,6 +17,7 @@ import {
 import usersRouter from './auth/auth.js';
 import userRouter from './services/users.js';
 import roomRouter from './services/room.js';
+import shared from './shared.js';
 
 // CHAT ROUTER import
 const PORT = process.env.PORT || 4545;
@@ -43,7 +43,6 @@ app.use(forbiddenErrHandler);
 app.use(serverErrHandler);
 
 export const sockets = {};
-let onlineUsers = [];
 
 const server = createServer(app);
 const io = new Server(server, { allowEIO3: true });
@@ -77,8 +76,8 @@ io.on('connection', (socket) => {
     socket.to(roomId).emit('message', message);
   });
 
-  socket.on('login', ({ username }) => {
-    onlineUsers.push({ username, id: socket.id, socket });
+  socket.on('login', ({ userId }) => {
+    shared.onlineUsers.push({ userId, socketId: socket.id, socket });
 
     //socket.join(room);
     console.log(socket.rooms);
@@ -88,13 +87,15 @@ io.on('connection', (socket) => {
     socket.emit('loggedin', { message: 'hello world' });
   });
 
+  socket.on('log-rooms', () => {
+    console.log('ROOMS', socket.rooms);
+  });
+
   socket.on('disconnect', (userId) => {
     delete sockets[userId];
     console.log('disconnected');
   });
 });
-
-export { onlineUsers };
 
 mongoose.connect(process.env.MONGODB_CONNECT).then(() => {
   console.log('SUCCESS: connected to MONGODB');
@@ -103,4 +104,3 @@ mongoose.connect(process.env.MONGODB_CONNECT).then(() => {
     console.log('SERVER listening on: ' + PORT);
   });
 });
-

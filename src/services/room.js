@@ -2,8 +2,8 @@ import express from 'express';
 import { JWTAuthMiddleware } from '../auth/middlewares.js';
 import RoomModel from '../models/roomSchema.js';
 import { sockets } from '../server.js';
-import { onlineUsers } from '../server.js';
 const roomRouter = express.Router();
+import shared from '../shared.js';
 
 // GET
 
@@ -94,7 +94,7 @@ roomRouter.get('/history/:id', async (req, res) => {
 roomRouter.get('/me', JWTAuthMiddleware, async (req, res, next) => {
   try {
     console.log('HELLLO THIS IS MY CONSOLE LOG!!!', req.user._id.toString());
-    const find = await RoomModel.find({
+    const rooms = await RoomModel.find({
       participants: req.user._id.toString(),
     }).populate({
       path: 'participants',
@@ -103,16 +103,15 @@ roomRouter.get('/me', JWTAuthMiddleware, async (req, res, next) => {
 
     // this person's socket must join all the rooms in which s/he is already present
 
-    const rooms = await RoomModel.find({ participants: userId });
-    console.log('userid', userId);
-    for (let room of rooms) {
-      onlineUsers
-        .find((element) => element.userId === userId)
-        .socket.join(room.id);
-    }
-    res.send(rooms);
+    console.log('LOGGIN', shared.onlineUsers, req.user._id.toString());
 
-    // res.send(find);
+    for (let room of rooms) {
+      shared.onlineUsers
+        .find((element) => element.userId === req.user._id.toString())
+        .socket.join(room._id.toString());
+    }
+
+    res.send(rooms);
   } catch (error) {
     console.log(error);
     next(error);
