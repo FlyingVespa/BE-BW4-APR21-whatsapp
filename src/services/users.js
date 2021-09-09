@@ -50,7 +50,7 @@ userRouter.put("/:id", JWTAuthMiddleware, async (req, res, next) => {
 });
 
 
-userRouter.post('/:id/upload',JWTAuthMiddleware, uploadOnCloudinary, async (req, res, next) => {
+userRouter.post('/me/upload',JWTAuthMiddleware, uploadOnCloudinary, async (req, res, next) => {
     try {
       const user = await UserModel.findById(req.user._id);
       user.avatar = req.file.path;
@@ -60,6 +60,18 @@ userRouter.post('/:id/upload',JWTAuthMiddleware, uploadOnCloudinary, async (req,
       next(error);
     }
   }
+);
+
+userRouter.post('/:id/upload',JWTAuthMiddleware, uploadOnCloudinary, async (req, res, next) => {
+  try {
+    const user = await UserModel.findById(req.user._id);
+    user.avatar = req.file.path;
+    await user.save();
+    res.send(user.avatar);
+  } catch (error) {
+    next(error);
+  }
+}
 );
 
 
