@@ -157,7 +157,7 @@ userRouter.get('/:username', JWTAuthMiddleware, async (req, res, next) => {
 
 userRouter.put('/:id/status', JWTAuthMiddleware, async (req, res, next) => {
   try {
-    const user = await UserSchema.findById(req.user._id);
+    const user = await UserModel.findById(req.user._id);
     user.status = req.body.status;
     await user.save();
     res.send(user);
@@ -170,7 +170,7 @@ userRouter.put('/:id/status', JWTAuthMiddleware, async (req, res, next) => {
 
 userRouter.delete('/:id', JWTAuthMiddleware, async (req, res, next) => {
   try {
-    const deletedUser = await UserSchema.findByIdAndDelete(req.params.id);
+    const deletedUser = await UserModel.findByIdAndDelete(req.params.id);
     if (deletedUser) {
       res.status(204).send();
     } else {
