@@ -1,20 +1,20 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
 export const MessageSchema = new Schema({
-  text: {
+  message: {
     type: String,
     required: true,
+    default:"Default"
   },
-  sender: {
-    type: String,
-    required: true,
-  },
-  id: {
-    type: String,
-    required: true,
-  },
+  sender: { 
+    type: Schema.Types.ObjectId,
+     ref: "user", 
+     required: true 
+
+},
+  
 });
 //participants array
 const RoomSchema = new Schema(
@@ -27,7 +27,7 @@ const RoomSchema = new Schema(
       type: [
         {
           type: Schema.Types.ObjectId,
-          ref: 'user',
+          ref: "user",
         },
       ],
       default: undefined,
@@ -42,6 +42,6 @@ const RoomSchema = new Schema(
   { timestamps: true }
 );
 
-const RoomModel = model('rooms', RoomSchema);
+const RoomModel = model("rooms", RoomSchema);
 
 export default RoomModel;
