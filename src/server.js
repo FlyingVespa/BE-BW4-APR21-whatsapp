@@ -20,7 +20,7 @@ import roomRouter from './services/room.js';
 import shared from './shared.js';
 
 // CHAT ROUTER import
-const PORT = process.env.PORT || 4545;
+const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -48,7 +48,7 @@ const server = createServer(app);
 const io = new Server(server, { allowEIO3: true });
 
 io.on('connection', (socket) => {
-  console.log(socket);
+ // console.log(socket);
   socket.on('did-connect', async (userId) => {
     sockets[userId] = socket;
     try {
@@ -64,16 +64,19 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', async ({ message, roomId }) => {
-    socket.join(roomId);
-    const room = await RoomModel.findById(roomId);
+    //socket.join(roomId);
+    //const room = await RoomModel.findById(roomId);
+    console.log(message)
+    console.log(roomId)
 
-    await RoomModel.findOneAndUpdate(
-      { _id: roomId },
+    await RoomModel.findByIdAndUpdate(
+      roomId,
       {
         $push: { chatHistory: message },
       }
     );
     socket.to(roomId).emit('message', message);
+  
   });
 
   socket.on('login', ({ userId }) => {
@@ -90,6 +93,7 @@ io.on('connection', (socket) => {
   socket.on('log-rooms', () => {
     console.log('ROOMS', socket.rooms);
   });
+
 
   socket.on('disconnect', (userId) => {
     delete sockets[userId];
