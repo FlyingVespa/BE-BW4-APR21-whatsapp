@@ -2,9 +2,9 @@ import express from 'express';
 import { JWTAuthMiddleware } from '../auth/middlewares.js';
 import RoomModel from '../models/roomSchema.js';
 import { sockets } from '../server.js';
-const roomRouter = express.Router();
 import shared from '../shared.js';
 
+const roomRouter = express.Router();
 // GET
 
 roomRouter.get('/', async (req, res, next) => {
@@ -69,7 +69,7 @@ roomRouter.get('/user/:id', JWTAuthMiddleware, async (req, res) => {
 // });
 
 // POST
-roomRouter.post('/', async (req, res, next) => {
+roomRouter.post('/me', async (req, res, next) => {
   try {
     const newRoom = new RoomModel(req.body);
     console.log(newRoom);
@@ -79,14 +79,19 @@ roomRouter.post('/', async (req, res, next) => {
     res.status(201).send(newRoom);
   } catch (error) {
     console.log(error);
-    error.status = 400;
+    error.status = 400; 
     next(error);
   }
 });
 
-roomRouter.get('/history/:id', async (req, res) => {
-  const room = await RoomModel.findById(req.params.id);
+roomRouter.get('/history/:id', async (req, res, next) => {
+  try {
+    const room = await RoomModel.findById(req.params.id);
   res.status(200).send({ chatHistory: room.chatHistory });
+  } catch (error) {
+    next(error);
+  }
+  
 });
 
 // need to check history soon
